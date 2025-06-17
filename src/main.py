@@ -16,7 +16,9 @@ def main():
     driver.implicitly_wait(5)
 
     driver.get("https://uspdigital.usp.br/jupiterweb/jupCarreira.jsp?codmnu=8275")
-    time.sleep(2)
+
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "comboUnidade")))
+    ##time.sleep(2)
 
     unidade_select = driver.find_element(By.ID, "comboUnidade")
     unidades = unidade_select.find_elements(By.TAG_NAME, "option")
@@ -32,7 +34,8 @@ def main():
 
         unidade_select = driver.find_element(By.ID, "comboUnidade")
         unidade_select.find_element(By.CSS_SELECTOR, f"option[value='{unidade_value}']").click()
-        time.sleep(1)
+
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "comboCurso")))
 
         unidade_obj = UnidadeUSP(unidade_name)
         unidades_data[unidade_name] = unidade_obj
@@ -48,11 +51,19 @@ def main():
 
             curso_select = driver.find_element(By.ID, "comboCurso")
             curso_select.find_element(By.CSS_SELECTOR, f"option[value='{curso_value}']").click()
-            time.sleep(0.3)
 
-            driver.find_element(By.ID, "enviar").click()
-            time.sleep(0.3)
-            driver.find_element(By.ID, "step4-tab").click()
+            # time.sleep(0.3)
+            #
+            # driver.find_element(By.ID, "enviar").click()
+            # time.sleep(0.3)
+            # driver.find_element(By.ID, "step4-tab").click()
+
+            # Espera o botão "Enviar" estar clicável (em vez de sleep)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "enviar"))).click()
+
+            # Espera a aba "Grade Curricular" estar clicável e já clica nela
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "step4-tab"))).click()
+
             try:
                 unidade = driver.find_element(By.CSS_SELECTOR, "span.unidade").text.strip()
                 curso = driver.find_element(By.CSS_SELECTOR, "span.curso").text.strip()
@@ -66,9 +77,12 @@ def main():
                 print(f"Duração Mínima: {duracao_minima} semestres")
                 
                 # Aguarda aba carregar
-                time.sleep(0.3)
-
-                grade = driver.find_element(By.ID, "gradeCurricular")
+                # time.sleep(0.3)
+                #
+                # grade = driver.find_element(By.ID, "gradeCurricular")
+                grade = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.ID, "gradeCurricular"))
+                )
                 linhas = grade.find_elements(By.TAG_NAME, "tr")
 
                 tipo_atual = ""
@@ -82,7 +96,8 @@ def main():
                         nome = colunas[1].text.strip()
                                              
                         driver.execute_script("arguments[0].click();", link)
-                        time.sleep(0.3)
+                        #time.sleep(0.3)
+                        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "disciplinaDialog")))
 
                         dialog = driver.find_element(By.ID, "disciplinaDialog")
 
@@ -115,8 +130,9 @@ def main():
                 EC.element_to_be_clickable((By.CSS_SELECTOR, "a.ui-dialog-titlebar-close"))
             )
             fechar_botao.click()
-            driver.find_element(By.ID, "step1-tab").click()
-            time.sleep(1)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "step1-tab"))).click()
+            # driver.find_element(By.ID, "step1-tab").click()
+            # time.sleep(1)
 
     driver.quit()
 
