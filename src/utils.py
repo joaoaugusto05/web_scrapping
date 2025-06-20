@@ -1,25 +1,52 @@
 import json
 
 def exportar_para_json(unidades_data, caminho="dados_extraidos.json"):
-    with open(caminho, "w", encoding="utf-8") as f:
-        json.dump({
-            unidade: {
-                "cursos": [
+    print("[DEBUG] Exportando dados para JSON...")
+    dados = {}
+
+    for unidade_nome, unidade in unidades_data.items():
+        cursos_data = []
+        for curso in unidade.cursos:
+            cursos_data.append({
+                "nome": curso.nome,
+                "duracao_ideal": curso.duracao_ideal,
+                "duracao_min": curso.duracao_min,
+                "duracao_max": curso.duracao_max,
+                "obrigatorias": [
                     {
-                        "nome": curso.nome,
-                        "duracao_ideal": curso.duracao_ideal,
-                        "duracao_min": curso.duracao_min,
-                        "duracao_max": curso.duracao_max,
-                        "obrigatorias": [d.codigo for d in curso.obrigatorias],
-                        "optativas_eletivas": [d.codigo for d in curso.optativas_eletivas],
-                        "optativas_livres": [d.codigo for d in curso.optativas_livres]
-                    }
-                    for curso in unidade_obj.cursos
+                        "codigo": d.codigo,
+                        "nome": d.nome,
+                        "creditos_aula": d.creditos_aula,
+                        "creditos_trabalho": d.creditos_trabalho,
+                        "carga_horaria": d.carga_horaria
+                    } for d in curso.obrigatorias
+                ],
+                "optativas_eletivas": [
+                    {
+                        "codigo": d.codigo,
+                        "nome": d.nome,
+                        "creditos_aula": d.creditos_aula,
+                        "creditos_trabalho": d.creditos_trabalho,
+                        "carga_horaria": d.carga_horaria
+                    } for d in curso.optativas_eletivas
+                ],
+                "optativas_livres": [
+                    {
+                        "codigo": d.codigo,
+                        "nome": d.nome,
+                        "creditos_aula": d.creditos_aula,
+                        "creditos_trabalho": d.creditos_trabalho,
+                        "carga_horaria": d.carga_horaria
+                    } for d in curso.optativas_livres
                 ]
-            }
-            for unidade, unidade_obj in unidades_data.items()
-        }, f, ensure_ascii=False, indent=2)
+            })
+        dados[unidade_nome] = {"cursos": cursos_data}
+
+    with open(caminho, "w", encoding="utf-8") as f:
+        json.dump(dados, f, ensure_ascii=False, indent=2)
+
     print(f"📁 Dados exportados para: {caminho}")
+    print("[DEBUG] Exportação concluída com sucesso.")
 
 def listar_cursos_por_unidade(unidades_data):
     print("\n📚 Unidades e seus cursos:")

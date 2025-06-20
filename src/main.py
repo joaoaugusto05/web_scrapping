@@ -6,7 +6,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from curso import Curso
 from disciplina import Disciplina
 from unidade import UnidadeUSP
-from utils import exportar_para_json
+#from utils import exportar_para_json
+from reader import iniciar_menu_interativo
+
 
 def main():
     parser = argparse.ArgumentParser(description="Extrator de cursos do Júpiter da USP.")
@@ -31,7 +33,7 @@ def main():
     unidades = unidade_select.find_elements(By.TAG_NAME, "option")
 
     unidades_data = {}
-    disciplinas_por_codigo = {}  # disciplina.codigo -> Disciplina
+    disciplinas_por_codigo = {} 
     unidades_processadas = 0
 
     for unidade in unidades:
@@ -181,7 +183,8 @@ def main():
             for d in curso.optativas_livres:
                 print(f"      → [LV] {d}")
     
-    exportar_para_json(unidades_data)
+    #exportar_para_json(unidades_data)
+    iniciar_menu_interativo(unidades_data, disciplinas_por_codigo)
     driver.quit()
 
 if __name__ == "__main__":

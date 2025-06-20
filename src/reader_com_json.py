@@ -1,10 +1,66 @@
+import json
 from curso import Curso
 from unidade import UnidadeUSP
 from disciplina import Disciplina
 
-# Menu interativo para testar as funcionalidades
+# Caminho para o arquivo JSON exportado
+CAMINHO_JSON = "dados_extraidos.json"
 
-def iniciar_menu_interativo(unidades, disciplinas_por_codigo):
+# Carrega os dados e reconstrói os objetos
+
+def carregar_dados():
+    with open(CAMINHO_JSON, "r", encoding="utf-8") as f:
+        dados = json.load(f)
+
+    unidades = {}
+    disciplinas_por_codigo = {}
+
+    for unidade_nome, unidade_info in dados.items():
+        unidade_obj = UnidadeUSP(unidade_nome)
+
+        for curso_info in unidade_info["cursos"]:
+            curso_obj = Curso(
+                nome=curso_info["nome"],
+                unidade=unidade_nome,
+                duracao_ideal=curso_info["duracao_ideal"],
+                duracao_min=curso_info["duracao_min"],
+                duracao_max=curso_info["duracao_max"]
+            )
+
+            for tipo in ["obrigatorias", "optativas_eletivas", "optativas_livres"]:
+                for d in curso_info[tipo]:
+                    if isinstance(d, str):
+                        codigo = d
+                        nome = ""
+                        ch = 0
+                        ct = 0
+                        carga = ""
+                    else:
+                        codigo = d.get("codigo")
+                        nome = d.get("nome", "")
+                        ch = d.get("creditos_aula", 0)
+                        ct = d.get("creditos_trabalho", 0)
+                        carga = d.get("carga_horaria", "")
+
+                    if codigo not in disciplinas_por_codigo:
+                        disciplina = Disciplina(codigo, nome, ch, ct, carga)
+                        disciplinas_por_codigo[codigo] = disciplina
+                    else:
+                        disciplina = disciplinas_por_codigo[codigo]
+
+                    getattr(curso_obj, tipo).append(disciplina)
+
+            unidade_obj.cursos.append(curso_obj)
+
+        unidades[unidade_nome] = unidade_obj
+
+    return unidades, disciplinas_por_codigo
+
+
+# Menu interativo para testar as funcionalidades
+def menu():
+    unidades, disciplinas_por_codigo = carregar_dados()
+
     while True:
         print("\n=== MENU ===")
         print("1. Listar cursos por unidade")
@@ -66,3 +122,7 @@ def iniciar_menu_interativo(unidades, disciplinas_por_codigo):
             break
         else:
             print("Opção inválida!")
+
+
+if __name__ == "__main__":
+    menu()
