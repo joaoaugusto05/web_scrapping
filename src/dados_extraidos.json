@@ -1,0 +1,588 @@
+{
+  "Escola de Artes, Ciências e Humanidades - ( EACH )": {
+    "cursos": [
+      {
+        "nome": "Bacharelado em Biotecnologia (Ciclo Básico) - integral",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH5501",
+          "ACH5511",
+          "ACH5521",
+          "ACH5541",
+          "ACH5502",
+          "ACH5512",
+          "ACH5522",
+          "ACH5532",
+          "ACH5542"
+        ],
+        "optativas_eletivas": [
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192"
+        ],
+        "optativas_livres": []
+      },
+      {
+        "nome": "Bacharelado em Educação Física e Saúde (Ciclo Básico) - integral",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH0051",
+          "ACH0501",
+          "ACH0511",
+          "ACH0042",
+          "ACH0052",
+          "ACH0502",
+          "ACH0563"
+        ],
+        "optativas_eletivas": [
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131",
+          "ACH0141",
+          "ACH0151",
+          "ACH0161",
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192"
+        ],
+        "optativas_livres": []
+      },
+      {
+        "nome": "Bacharelado em Gestão Ambiental (Ciclo Básico) - matutino",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH1002",
+          "ACH1041",
+          "ACH1101",
+          "ACH0042",
+          "ACH1012",
+          "ACH1014",
+          "ACH1021"
+        ],
+        "optativas_eletivas": [
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131",
+          "ACH0141",
+          "ACH0151",
+          "ACH0161",
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192"
+        ],
+        "optativas_livres": []
+      },
+      {
+        "nome": "Bacharelado em Gestão Ambiental (Ciclo Básico) - noturno",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH1002",
+          "ACH1041",
+          "ACH1101",
+          "ACH0042",
+          "ACH1012",
+          "ACH1014",
+          "ACH1021"
+        ],
+        "optativas_eletivas": [
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131",
+          "ACH0141",
+          "ACH0151",
+          "ACH0161",
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192"
+        ],
+        "optativas_livres": []
+      },
+      {
+        "nome": "Bacharelado em Lazer e Turismo (Ciclo Básico) - vespertino",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH1511",
+          "ACH1533",
+          "ACH1541",
+          "ACH0042",
+          "ACH1512",
+          "ACH1532",
+          "ACH1603"
+        ],
+        "optativas_eletivas": [
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131",
+          "ACH0141",
+          "ACH0151",
+          "ACH0161",
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192"
+        ],
+        "optativas_livres": [
+          "ACH0051",
+          "ACH0052"
+        ]
+      },
+      {
+        "nome": "Bacharelado em Lazer e Turismo (Ciclo Básico) - noturno",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH1511",
+          "ACH1533",
+          "ACH1541",
+          "ACH0042",
+          "ACH1512",
+          "ACH1532",
+          "ACH1603"
+        ],
+        "optativas_eletivas": [
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131",
+          "ACH0141",
+          "ACH0151",
+          "ACH0161",
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192"
+        ],
+        "optativas_livres": [
+          "ACH0051",
+          "ACH0052"
+        ]
+      },
+      {
+        "nome": "Bacharelado em Sistemas de Informação (Ciclo Básico) - matutino",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH2001",
+          "ACH2011",
+          "ACH2014",
+          "ACH2002",
+          "ACH2012",
+          "ACH2013",
+          "ACH2023",
+          "ACH2033"
+        ],
+        "optativas_eletivas": [
+          "ACH0141",
+          "ACH0151",
+          "ACH0161"
+        ],
+        "optativas_livres": []
+      },
+      {
+        "nome": "Bacharelado em Sistemas de Informação (Ciclo Básico) - noturno",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH2001",
+          "ACH2011",
+          "ACH2014",
+          "ACH2002",
+          "ACH2012",
+          "ACH2013",
+          "ACH2023",
+          "ACH2033"
+        ],
+        "optativas_eletivas": [
+          "ACH0141",
+          "ACH0151",
+          "ACH0161"
+        ],
+        "optativas_livres": []
+      },
+      {
+        "nome": "Bacharelado em Têxtil e Moda (Ciclo Básico) - matutino",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH2511",
+          "ACH2521",
+          "ACH2531",
+          "ACH2541",
+          "ACH2512",
+          "ACH2533",
+          "ACH2542",
+          "ACH2552"
+        ],
+        "optativas_eletivas": [
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131",
+          "ACH0141",
+          "ACH0151",
+          "ACH0161",
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192"
+        ],
+        "optativas_livres": []
+      },
+      {
+        "nome": "Gerontologia (Ciclo Básico) - vespertino",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH0051",
+          "ACH3011",
+          "ACH3022",
+          "ACH3023",
+          "ACH0052",
+          "ACH3024",
+          "ACH3025",
+          "ACH3043",
+          "ACH3047",
+          "ACH3137"
+        ],
+        "optativas_eletivas": [
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131",
+          "ACH0141",
+          "ACH0151",
+          "ACH0161",
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192",
+          "ACH3042",
+          "ACH3052",
+          "ACH3065"
+        ],
+        "optativas_livres": [
+          "ACH3001"
+        ]
+      },
+      {
+        "nome": "Gestão de Políticas Públicas (Ciclo Básico) - matutino",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH3511",
+          "ACH3541",
+          "ACH3561",
+          "ACH3531",
+          "ACH3551",
+          "ACH0042"
+        ],
+        "optativas_eletivas": [
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192",
+          "ACH0141",
+          "ACH0151",
+          "ACH0161",
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131"
+        ],
+        "optativas_livres": [
+          "ACH0051",
+          "ACH0052"
+        ]
+      },
+      {
+        "nome": "Gestão de Políticas Públicas (Ciclo Básico) - noturno",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH3511",
+          "ACH3541",
+          "ACH3561",
+          "ACH3531",
+          "ACH3551",
+          "ACH0042"
+        ],
+        "optativas_eletivas": [
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192",
+          "ACH0141",
+          "ACH0151",
+          "ACH0161",
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131"
+        ],
+        "optativas_livres": [
+          "ACH0051",
+          "ACH0052"
+        ]
+      },
+      {
+        "nome": "Licenciatura em Ciências da Natureza (Ciclo Básico) - noturno",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0041",
+          "ACH4012",
+          "ACH4021",
+          "ACH4031",
+          "ACH4041",
+          "ACH4063",
+          "ACH4006",
+          "ACH4011",
+          "ACH4013",
+          "ACH4032",
+          "ACH4033"
+        ],
+        "optativas_eletivas": [
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131",
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192"
+        ],
+        "optativas_livres": [
+          "ACH4022",
+          "ACH4052"
+        ]
+      },
+      {
+        "nome": "Marketing (Ciclo Básico) - matutino",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH0051",
+          "ACH4501",
+          "ACH4531",
+          "ACH0052",
+          "ACH4511",
+          "ACH4542",
+          "ACH4552"
+        ],
+        "optativas_eletivas": [
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131",
+          "ACH0141",
+          "ACH0151",
+          "ACH0161",
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192"
+        ],
+        "optativas_livres": []
+      },
+      {
+        "nome": "Marketing (Ciclo Básico) - noturno",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "12",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH0051",
+          "ACH4501",
+          "ACH4531",
+          "ACH0052",
+          "ACH4511",
+          "ACH4542",
+          "ACH4552"
+        ],
+        "optativas_eletivas": [
+          "ACH0101",
+          "ACH0111",
+          "ACH0121",
+          "ACH0131",
+          "ACH0141",
+          "ACH0151",
+          "ACH0161",
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192"
+        ],
+        "optativas_livres": []
+      },
+      {
+        "nome": "Obstetrícia (Ciclo Básico) - integral",
+        "duracao_ideal": "",
+        "duracao_min": "8",
+        "duracao_max": "14",
+        "obrigatorias": [
+          "ACH0021",
+          "ACH0041",
+          "ACH5001",
+          "ACH5002",
+          "ACH5011",
+          "ACH5022",
+          "ACH5041",
+          "ACH5071",
+          "ACH0042",
+          "ACH5003",
+          "ACH5013",
+          "ACH5042",
+          "ACH5044",
+          "ACH5054"
+        ],
+        "optativas_eletivas": [
+          "ACH0102",
+          "ACH0112",
+          "ACH0122",
+          "ACH0132",
+          "ACH0142",
+          "ACH0152",
+          "ACH0162",
+          "ACH0172",
+          "ACH0182",
+          "ACH0192"
+        ],
+        "optativas_livres": [
+          "ACH5045",
+          "ACH5052",
+          "ACH5093"
+        ]
+      }
+    ]
+  }
+}

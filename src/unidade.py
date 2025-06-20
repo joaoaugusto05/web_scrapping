@@ -9,5 +9,8 @@ class UnidadeUSP:
         self.nome = nome
         self.cursos = []
 
+    def adicionar_curso(self, curso):
+        self.cursos.append(curso)
+
     def __str__(self):
         return f"Unidade: {self.nome} - {len(self.cursos)} curso(s)"
