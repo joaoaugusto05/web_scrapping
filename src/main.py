@@ -10,6 +10,36 @@ from reader import iniciar_menu_interativo
 from bs4 import BeautifulSoup
 
 import time
+
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
+from selenium.webdriver.common.by import By
+
+
+def wait_until_not_obstructed(driver, timeout=5):
+    end_time = time.time() + timeout
+    while time.time() < end_time:
+        overlays = driver.find_elements(By.CSS_SELECTOR, ".ui-widget-overlay, .modal, .loading")
+        if all(not overlay.is_displayed() for overlay in overlays):
+            return True
+        time.sleep(0.5)
+    return False
+
+def safe_click(driver, by, value, timeout=15):
+    try:
+        element = WebDriverWait(driver, timeout).until(
+            EC.element_to_be_clickable((by, value))
+        )
+        element.click()
+
+    except ElementClickInterceptedException:
+        print("Clique interceptado! Tentando novamente após aguardar.")
+        if wait_until_not_obstructed(driver, timeout=timeout):
+            element.click()
+        else:
+            raise
+
 def main():
     parser = argparse.ArgumentParser(description="Extrator de cursos do Júpiter da USP.")
     parser.add_argument("quantidade_unidades", type=int, help="Quantidade de unidades a serem processadas")
@@ -72,8 +102,25 @@ def main():
             curso_select = driver.find_element(By.ID, "comboCurso")
             curso_select.find_element(By.CSS_SELECTOR, f"option[value='{curso_value}']").click()
 
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "enviar"))).click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "step4-tab"))).click()
+            safe_click(driver, By.ID, "enviar")
+            time.sleep(0.15)
+            html = driver.page_source
+            soup = BeautifulSoup(html, "html.parser")
+            dialog = soup.select_one("div.ui-dialog[style*='display: block']")
+            if dialog:
+                try:
+                    wait = WebDriverWait(driver, 10)
+                    fechar_button = wait.until(EC.element_to_be_clickable(
+                        (By.XPATH, "//button[./span[text()='Fechar']]")
+                    ))
+                    fechar_button.click()
+                    print(f"[WARNING] → Sem dados para {curso_name}.")
+                    time.sleep(0.5)
+                    continue
+                except TimeoutException:
+                    pass
+            safe_click(driver, By.ID, "step4-tab")
+            
             try:
                 duracao_ideal = driver.find_elements(By.CSS_SELECTOR, "span.duridlhab")[1].text.strip()
                 duracao_minima = driver.find_element(By.CSS_SELECTOR, "span.durminhab").text.strip()
@@ -87,11 +134,17 @@ def main():
                     duracao_max=duracao_max
                 )
                 unidade_obj.cursos.append(curso_obj)
-
-                WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.ID, "gradeCurricular"))
-                )
-
+                try:
+                    WebDriverWait(driver, 10).until(
+                        EC.presence_of_element_located((By.ID, "gradeCurricular"))
+                    )
+                except:
+                    time.sleep(1)
+                    WebDriverWait(driver, 10).until(
+                        EC.presence_of_element_located((By.ID, "gradeCurricular"))
+                    )
+                    
+                    
                 tipo_atual = ""
                 WebDriverWait(driver, 10).until(
                     EC.presence_of_all_elements_located((By.CSS_SELECTOR, "#gradeCurricular tr"))
@@ -146,12 +199,9 @@ def main():
                             curso_obj.optativas_livres.append(disciplina_obj)
                         else:
                             curso_obj.obrigatorias.append(disciplina_obj)
-
-                        print(f"    → {disciplina_obj}")
-
             except Exception as e:
                 print(f"[ERRO ao coletar info do curso '{curso_name}' da unidade '{unidade_name}']: {e}")
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "step1-tab"))).click()
+            safe_click(driver, By.ID, "step1-tab")
 
         unidades_processadas += 1
         
