@@ -22,6 +22,7 @@ O script realiza scraping da grade curricular e detalhes das disciplinas diretam
 Garanta a instalacao das bibliotecas necessarias.
 ```bash
 pip install -r requirements.txt
+```
 
 No terminal, execute o script principal passando como argumento o número de unidades que deseja processar.
 
