@@ -6,7 +6,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from curso import Curso
 from disciplina import Disciplina
 from unidade import UnidadeUSP
-#from utils import exportar_para_json
 from reader import iniciar_menu_interativo
 from bs4 import BeautifulSoup
 
@@ -47,7 +46,7 @@ def main():
         if unidades_processadas >= limite_unidades:
             break
 
-        print(f"[DEBUG] Unidade selecionada: {unidade_name}")
+        print(f"[CARREGANDO] Unidade selecionada: {unidade_name}")
         unidade_select = driver.find_element(By.ID, "comboUnidade")
         unidade_select.find_element(By.CSS_SELECTOR, f"option[value='{unidade_value}']").click()
 
@@ -69,7 +68,7 @@ def main():
             if not curso_value:
                 continue
 
-            print(f"[DEBUG] → Curso: {curso_name}")
+            print(f"[CARREGANDO] → Curso: {curso_name}")
             curso_select = driver.find_element(By.ID, "comboCurso")
             curso_select.find_element(By.CSS_SELECTOR, f"option[value='{curso_value}']").click()
 
@@ -161,28 +160,7 @@ def main():
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "step1-tab"))).click()
 
         unidades_processadas += 1
-
-    # print("\n✅ Finalizou com sucesso.")
-    # print("\n🧪 Teste de estrutura de dados:")
-    # for unidade_nome, unidade in unidades_data.items():
-    #     print(f"\n📚 Unidade: {unidade.nome}")
-    #     for curso in unidade.cursos:
-    #         print(f"  🎓 Curso: {curso.nome}")
-    #         print(f"    - Duração: ideal {curso.duracao_ideal}, min {curso.duracao_min}, max {curso.duracao_max}")
-    #         print(f"    - Disciplinas obrigatórias: {len(curso.obrigatorias)}")
-    #         print(f"    - Disciplinas optativas eletivas: {len(curso.optativas_eletivas)}")
-    #         print(f"    - Disciplinas optativas livres: {len(curso.optativas_livres)}")
-
-    #         for d in curso.obrigatorias:
-    #             print(f"      → [OB] {d}")
-
-    #         for d in curso.optativas_eletivas:
-    #             print(f"      → [EL] {d}")
-
-    #         for d in curso.optativas_livres:
-    #             print(f"      → [LV] {d}")
-    
-    #exportar_para_json(unidades_data)
+        
     iniciar_menu_interativo(unidades_data, disciplinas_por_codigo)
     driver.quit()
 

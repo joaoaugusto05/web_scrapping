@@ -17,9 +17,9 @@ def iniciar_menu_interativo(unidades, disciplinas_por_codigo):
 
         if opcao == "1":
             for unidade in unidades.values():
-                print(f"\n📚 {unidade.nome}")
+                print(f"\n📚 {unidade}")
                 for curso in unidade.cursos:
-                    print(f"  - {curso.nome}")
+                    print(f"  - {curso}")
 
         elif opcao == "2":
             nome_curso = input("Digite o nome (ou parte) do curso: ").lower()
