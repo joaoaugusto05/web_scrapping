@@ -23,7 +23,7 @@ def wait_until_not_obstructed(driver, timeout=5):
         overlays = driver.find_elements(By.CSS_SELECTOR, ".ui-widget-overlay, .modal, .loading")
         if all(not overlay.is_displayed() for overlay in overlays):
             return True
-        time.sleep(0.5)
+        time.sleep(0.1)
     return False
 
 def safe_click(driver, by, value, timeout=15):
@@ -34,7 +34,7 @@ def safe_click(driver, by, value, timeout=15):
         element.click()
 
     except ElementClickInterceptedException:
-        print("Clique interceptado! Tentando novamente após aguardar.")
+        print("[CARREGANDO] Aguardo o carregamento dos elementos do site.")
         if wait_until_not_obstructed(driver, timeout=timeout):
             element.click()
         else:
@@ -47,7 +47,7 @@ def main():
     limite_unidades = args.quantidade_unidades
 
     options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 
     driver = webdriver.Chrome(options=options)
