@@ -1,13 +1,21 @@
+import argparse
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 from curso import Curso
 from disciplina import Disciplina
 from unidade import UnidadeUSP
+#from utils import exportar_para_json
+from reader import iniciar_menu_interativo
+
 
 def main():
+    parser = argparse.ArgumentParser(description="Extrator de cursos do Júpiter da USP.")
+    parser.add_argument("quantidade_unidades", type=int, help="Quantidade de unidades a serem processadas")
+    args = parser.parse_args()
+    limite_unidades = args.quantidade_unidades
+
     options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized")
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
@@ -17,20 +25,27 @@ def main():
 
     driver.get("https://uspdigital.usp.br/jupiterweb/jupCarreira.jsp?codmnu=8275")
 
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "comboUnidade")))
-    ##time.sleep(2)
+    WebDriverWait(driver, 15).until(
+        lambda d: len(d.find_elements(By.CSS_SELECTOR, "#comboUnidade option")) > 1
+    )
 
     unidade_select = driver.find_element(By.ID, "comboUnidade")
     unidades = unidade_select.find_elements(By.TAG_NAME, "option")
 
     unidades_data = {}
-    cursos_data = {}
-    
+    disciplinas_por_codigo = {} 
+    unidades_processadas = 0
+
     for unidade in unidades:
         unidade_value = unidade.get_attribute("value")
         unidade_name = unidade.text.strip()
+
         if not unidade_value:
             continue
+        if unidades_processadas >= limite_unidades:
+            break
+
+        print(f"[DEBUG] Unidade selecionada: {unidade_name}")
 
         unidade_select = driver.find_element(By.ID, "comboUnidade")
         unidade_select.find_element(By.CSS_SELECTOR, f"option[value='{unidade_value}']").click()
@@ -39,6 +54,10 @@ def main():
 
         unidade_obj = UnidadeUSP(unidade_name)
         unidades_data[unidade_name] = unidade_obj
+
+        WebDriverWait(driver, 10).until(
+            lambda d: len(d.find_elements(By.CSS_SELECTOR, "#comboCurso option")) > 1
+        )
 
         curso_select = driver.find_element(By.ID, "comboCurso")
         cursos_options = curso_select.find_elements(By.TAG_NAME, "option")
@@ -49,91 +68,123 @@ def main():
             if not curso_value:
                 continue
 
+            print(f"[DEBUG] → Curso: {curso_name}")
+
             curso_select = driver.find_element(By.ID, "comboCurso")
             curso_select.find_element(By.CSS_SELECTOR, f"option[value='{curso_value}']").click()
 
-            # time.sleep(0.3)
-            #
-            # driver.find_element(By.ID, "enviar").click()
-            # time.sleep(0.3)
-            # driver.find_element(By.ID, "step4-tab").click()
-
-            # Espera o botão "Enviar" estar clicável (em vez de sleep)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "enviar"))).click()
-
-            # Espera a aba "Grade Curricular" estar clicável e já clica nela
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "step4-tab"))).click()
 
             try:
-                unidade = driver.find_element(By.CSS_SELECTOR, "span.unidade").text.strip()
-                curso = driver.find_element(By.CSS_SELECTOR, "span.curso").text.strip()
                 duracao_ideal = driver.find_element(By.CSS_SELECTOR, "span.duridlhab").text.strip()
                 duracao_minima = driver.find_element(By.CSS_SELECTOR, "span.durminhab").text.strip()
                 duracao_max = driver.find_element(By.CSS_SELECTOR, "span.durmaxhab").text.strip()
-                cursos_data[curso_name] = Curso(nome = curso_name, unidade = unidade_name, duracao_ideal = duracao_ideal, duracao_min = duracao_minima, duracao_max = duracao_max)
-                print(f"Unidade: {unidade_name}")
-                print(f"Curso: {curso_name}")
-                print(f"Duração Ideal: {duracao_ideal} semestres")
-                print(f"Duração Mínima: {duracao_minima} semestres")
-                
-                # Aguarda aba carregar
-                # time.sleep(0.3)
-                #
-                # grade = driver.find_element(By.ID, "gradeCurricular")
-                grade = WebDriverWait(driver, 10).until(
+
+                curso_obj = Curso(
+                    nome=curso_name,
+                    unidade=unidade_name,
+                    duracao_ideal=duracao_ideal,
+                    duracao_min=duracao_minima,
+                    duracao_max=duracao_max
+                )
+
+                unidade_obj.cursos.append(curso_obj)
+
+                WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.ID, "gradeCurricular"))
                 )
-                linhas = grade.find_elements(By.TAG_NAME, "tr")
 
                 tipo_atual = ""
-                for linha in linhas:
-                    colunas = linha.find_elements(By.TAG_NAME, "td")
-                    if len(colunas) == 1:
-                        tipo_atual = colunas[0].text.strip()
-                    elif colunas and colunas[0].find_elements(By.CLASS_NAME, "disciplina"):
-                        link = colunas[0].find_element(By.CLASS_NAME, "disciplina")
-                        codigo = link.text.strip()
-                        nome = colunas[1].text.strip()
-                                             
-                        driver.execute_script("arguments[0].click();", link)
-                        #time.sleep(0.3)
-                        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "disciplinaDialog")))
+                linha_index = 0
 
-                        dialog = driver.find_element(By.ID, "disciplinaDialog")
+                while True:
+                    try:
+                        linhas = driver.find_elements(By.CSS_SELECTOR, "#gradeCurricular tr")
+                        if linha_index >= len(linhas):
+                            break
 
-                        def safe_text(cls_name):
-                            try:
-                                return dialog.find_element(By.CLASS_NAME, cls_name).text.strip()
-                            except:
-                                return ""
+                        linha = linhas[linha_index]
+                        linha_index += 1
 
-                        creditos_aula = int(safe_text("creditosAula") or 0)
-                        creditos_trabalho = int(safe_text("creditosTrabalho") or 0)
-                        carga_horaria = safe_text("cargaHorariaTotal")
-                        modalidade = safe_text("tipo")
-                        ativacao = safe_text("ativacao")
-                        objetivos = safe_text("objetivos")
-                        programa_resumido = safe_text("programaResumido")
-                        programa = safe_text("programa")
-                        metodo_avaliacao = safe_text("metodoAvaliacao")
-                        criterio_avaliacao = safe_text("criterioAvaliacao")
+                        colunas = linha.find_elements(By.TAG_NAME, "td")
+                        if len(colunas) == 1:
+                            tipo_atual = colunas[0].text.strip().lower()
+                        elif colunas and colunas[0].find_elements(By.CLASS_NAME, "disciplina"):
+                            link = colunas[0].find_element(By.CLASS_NAME, "disciplina")
+                            codigo = link.text.strip()
+                            nome = colunas[1].text.strip()
 
-                        docentes_elements = dialog.find_elements(By.CSS_SELECTOR, ".docentesResponsaveis li")
-                        docentes = [d.text.strip() for d in docentes_elements]
+                            driver.execute_script("arguments[0].click();", link)
+                            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "disciplinaDialog")))
 
-                        print(codigo)
-                
+                            dialog = driver.find_element(By.ID, "disciplinaDialog")
+
+                            def safe_text(cls):
+                                try:
+                                    return dialog.find_element(By.CLASS_NAME, cls).text.strip()
+                                except:
+                                    return ""
+
+                            creditos_aula = int(safe_text("creditosAula") or 0)
+                            creditos_trabalho = int(safe_text("creditosTrabalho") or 0)
+                            carga_horaria = safe_text("cargaHorariaTotal")
+
+                            if codigo not in disciplinas_por_codigo:
+                                disciplina_obj = Disciplina(codigo, nome, creditos_aula, creditos_trabalho, carga_horaria)
+                                disciplinas_por_codigo[codigo] = disciplina_obj
+                            else:
+                                disciplina_obj = disciplinas_por_codigo[codigo]
+
+                            if "eletiv" in tipo_atual:
+                                curso_obj.optativas_eletivas.append(disciplina_obj)
+                            elif "livre" in tipo_atual:
+                                curso_obj.optativas_livres.append(disciplina_obj)
+                            else:
+                                curso_obj.obrigatorias.append(disciplina_obj)
+
+                            print(f"    → {disciplina_obj}")
+
+                            fechar_botao = WebDriverWait(driver, 10).until(
+                                EC.element_to_be_clickable((By.CSS_SELECTOR, "a.ui-dialog-titlebar-close"))
+                            )
+                            fechar_botao.click()
+                            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "step4-tab"))).click()
+
+                    except Exception as e:
+                        print(f"[WARN] Erro ao processar linha {linha_index}: {e}")
+                        linha_index += 1
+                        continue
+
             except Exception as e:
-                print(f"[Erro ao coletar info do curso]: {e}")
+                print(f"[ERRO ao coletar info do curso '{curso_name}' da unidade '{unidade_name}']: {e}")
 
-            fechar_botao = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, "a.ui-dialog-titlebar-close"))
-            )
-            fechar_botao.click()
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "step1-tab"))).click()
-            # driver.find_element(By.ID, "step1-tab").click()
-            # time.sleep(1)
 
+        unidades_processadas += 1
+
+    print("\n✅ Finalizou com sucesso.")
+    print("\n🧪 Teste de estrutura de dados:")
+    for unidade_nome, unidade in unidades_data.items():
+        print(f"\n📚 Unidade: {unidade.nome}")
+        for curso in unidade.cursos:
+            print(f"  🎓 Curso: {curso.nome}")
+            print(f"    - Duração: ideal {curso.duracao_ideal}, min {curso.duracao_min}, max {curso.duracao_max}")
+            print(f"    - Disciplinas obrigatórias: {len(curso.obrigatorias)}")
+            print(f"    - Disciplinas optativas eletivas: {len(curso.optativas_eletivas)}")
+            print(f"    - Disciplinas optativas livres: {len(curso.optativas_livres)}")
+
+            for d in curso.obrigatorias:
+                print(f"      → [OB] {d}")
+
+            for d in curso.optativas_eletivas:
+                print(f"      → [EL] {d}")
+
+            for d in curso.optativas_livres:
+                print(f"      → [LV] {d}")
+    
+    #exportar_para_json(unidades_data)
+    iniciar_menu_interativo(unidades_data, disciplinas_por_codigo)
     driver.quit()
 
 if __name__ == "__main__":
