@@ -9,7 +9,7 @@ from unidade import UnidadeUSP
 
 def main():
     options = webdriver.ChromeOptions()
-    options.add_argument("--start-maximized")
+    options.add_argument("--headless")
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 
     driver = webdriver.Chrome(options=options)
@@ -65,7 +65,6 @@ def main():
                 print(f"Duração Ideal: {duracao_ideal} semestres")
                 print(f"Duração Mínima: {duracao_minima} semestres")
                 
-                # Aguarda aba carregar
                 time.sleep(0.3)
 
                 grade = driver.find_element(By.ID, "gradeCurricular")
