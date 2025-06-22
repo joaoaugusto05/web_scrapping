@@ -8,8 +8,9 @@ from disciplina import Disciplina
 from unidade import UnidadeUSP
 #from utils import exportar_para_json
 from reader import iniciar_menu_interativo
+from bs4 import BeautifulSoup
 
-
+import time
 def main():
     parser = argparse.ArgumentParser(description="Extrator de cursos do Júpiter da USP.")
     parser.add_argument("quantidade_unidades", type=int, help="Quantidade de unidades a serem processadas")
@@ -46,7 +47,7 @@ def main():
             break
 
         print(f"[DEBUG] Unidade selecionada: {unidade_name}")
-
+        
         unidade_select = driver.find_element(By.ID, "comboUnidade")
         unidade_select.find_element(By.CSS_SELECTOR, f"option[value='{unidade_value}']").click()
 
@@ -69,15 +70,13 @@ def main():
                 continue
 
             print(f"[DEBUG] → Curso: {curso_name}")
-
             curso_select = driver.find_element(By.ID, "comboCurso")
             curso_select.find_element(By.CSS_SELECTOR, f"option[value='{curso_value}']").click()
 
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "enviar"))).click()
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "step4-tab"))).click()
-
             try:
-                duracao_ideal = driver.find_element(By.CSS_SELECTOR, "span.duridlhab").text.strip()
+                duracao_ideal = driver.find_elements(By.CSS_SELECTOR, "span.duridlhab")[1].text.strip()
                 duracao_minima = driver.find_element(By.CSS_SELECTOR, "span.durminhab").text.strip()
                 duracao_max = driver.find_element(By.CSS_SELECTOR, "span.durmaxhab").text.strip()
 
@@ -88,7 +87,6 @@ def main():
                     duracao_min=duracao_minima,
                     duracao_max=duracao_max
                 )
-
                 unidade_obj.cursos.append(curso_obj)
 
                 WebDriverWait(driver, 10).until(
@@ -96,65 +94,63 @@ def main():
                 )
 
                 tipo_atual = ""
-                linha_index = 0
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, "#gradeCurricular tr"))
+                )
 
-                while True:
-                    try:
-                        linhas = driver.find_elements(By.CSS_SELECTOR, "#gradeCurricular tr")
-                        if linha_index >= len(linhas):
-                            break
+                html_grade = driver.find_element(By.ID, "gradeCurricular").get_attribute("outerHTML")
+                soup = BeautifulSoup(html_grade, "html.parser")
+                linhas = soup.select("tr")
+                print(len(linhas))
+                for linha in linhas:
+                    colunas = linha.find_all("td")
 
-                        linha = linhas[linha_index]
-                        linha_index += 1
+                    if len(colunas) == 1:
+                        tipo_atual = colunas[0].get_text(strip=True).lower()
 
-                        colunas = linha.find_elements(By.TAG_NAME, "td")
-                        if len(colunas) == 1:
-                            tipo_atual = colunas[0].text.strip().lower()
-                        elif colunas and colunas[0].find_elements(By.CLASS_NAME, "disciplina"):
-                            link = colunas[0].find_element(By.CLASS_NAME, "disciplina")
-                            codigo = link.text.strip()
-                            nome = colunas[1].text.strip()
+                    elif colunas and colunas[0].select_one(".disciplina"):
+                        link_element = colunas[0].select_one(".disciplina")
+                        codigo = link_element.get_text(strip=True)
+                        nome = colunas[1].get_text(strip=True)
 
-                            driver.execute_script("arguments[0].click();", link)
-                            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "disciplinaDialog")))
+                        selenium_link = driver.find_element(By.LINK_TEXT, codigo)
+                        driver.execute_script("arguments[0].click();", selenium_link)
 
-                            dialog = driver.find_element(By.ID, "disciplinaDialog")
+                        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "disciplinaDialog")))
+                        dialog = driver.find_element(By.ID, "disciplinaDialog")
 
-                            def safe_text(cls):
-                                try:
-                                    return dialog.find_element(By.CLASS_NAME, cls).text.strip()
-                                except:
-                                    return ""
+                        def safe_text(cls):
+                            try:
+                                return dialog.find_element(By.CLASS_NAME, cls).text.strip()
+                            except:
+                                return ""
 
-                            creditos_aula = int(safe_text("creditosAula") or 0)
-                            creditos_trabalho = int(safe_text("creditosTrabalho") or 0)
-                            carga_horaria = safe_text("cargaHorariaTotal")
+                        creditos_aula = int(safe_text("creditosAula") or 0)
+                        creditos_trabalho = int(safe_text("creditosTrabalho") or 0)
+                        carga_horaria = safe_text("cargaHorariaTotal")
+                        objetivos = safe_text("objetivos")
+                        programa = safe_text("programa")
 
-                            if codigo not in disciplinas_por_codigo:
-                                disciplina_obj = Disciplina(codigo, nome, creditos_aula, creditos_trabalho, carga_horaria)
-                                disciplinas_por_codigo[codigo] = disciplina_obj
-                            else:
-                                disciplina_obj = disciplinas_por_codigo[codigo]
+                        if codigo not in disciplinas_por_codigo:
+                            disciplina_obj = Disciplina(codigo, nome, creditos_aula, creditos_trabalho, carga_horaria, objetivos, programa)
+                            disciplinas_por_codigo[codigo] = disciplina_obj
+                        else:
+                            disciplina_obj = disciplinas_por_codigo[codigo]
 
-                            if "eletiv" in tipo_atual:
-                                curso_obj.optativas_eletivas.append(disciplina_obj)
-                            elif "livre" in tipo_atual:
-                                curso_obj.optativas_livres.append(disciplina_obj)
-                            else:
-                                curso_obj.obrigatorias.append(disciplina_obj)
+                        if "eletiv" in tipo_atual:
+                            curso_obj.optativas_eletivas.append(disciplina_obj)
+                        elif "livre" in tipo_atual:
+                            curso_obj.optativas_livres.append(disciplina_obj)
+                        else:
+                            curso_obj.obrigatorias.append(disciplina_obj)
 
-                            print(f"    → {disciplina_obj}")
+                        print(f"    → {disciplina_obj}")
 
-                            fechar_botao = WebDriverWait(driver, 10).until(
-                                EC.element_to_be_clickable((By.CSS_SELECTOR, "a.ui-dialog-titlebar-close"))
-                            )
-                            fechar_botao.click()
-                            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "step4-tab"))).click()
-
-                    except Exception as e:
-                        print(f"[WARN] Erro ao processar linha {linha_index}: {e}")
-                        linha_index += 1
-                        continue
+                        fechar_botao = WebDriverWait(driver, 10).until(
+                            EC.element_to_be_clickable((By.CSS_SELECTOR, "a.ui-dialog-titlebar-close"))
+                        )
+                        fechar_botao.click()
+                        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "step4-tab"))).click()
 
             except Exception as e:
                 print(f"[ERRO ao coletar info do curso '{curso_name}' da unidade '{unidade_name}']: {e}")
@@ -163,25 +159,25 @@ def main():
 
         unidades_processadas += 1
 
-    print("\n✅ Finalizou com sucesso.")
-    print("\n🧪 Teste de estrutura de dados:")
-    for unidade_nome, unidade in unidades_data.items():
-        print(f"\n📚 Unidade: {unidade.nome}")
-        for curso in unidade.cursos:
-            print(f"  🎓 Curso: {curso.nome}")
-            print(f"    - Duração: ideal {curso.duracao_ideal}, min {curso.duracao_min}, max {curso.duracao_max}")
-            print(f"    - Disciplinas obrigatórias: {len(curso.obrigatorias)}")
-            print(f"    - Disciplinas optativas eletivas: {len(curso.optativas_eletivas)}")
-            print(f"    - Disciplinas optativas livres: {len(curso.optativas_livres)}")
+    # print("\n✅ Finalizou com sucesso.")
+    # print("\n🧪 Teste de estrutura de dados:")
+    # for unidade_nome, unidade in unidades_data.items():
+    #     print(f"\n📚 Unidade: {unidade.nome}")
+    #     for curso in unidade.cursos:
+    #         print(f"  🎓 Curso: {curso.nome}")
+    #         print(f"    - Duração: ideal {curso.duracao_ideal}, min {curso.duracao_min}, max {curso.duracao_max}")
+    #         print(f"    - Disciplinas obrigatórias: {len(curso.obrigatorias)}")
+    #         print(f"    - Disciplinas optativas eletivas: {len(curso.optativas_eletivas)}")
+    #         print(f"    - Disciplinas optativas livres: {len(curso.optativas_livres)}")
 
-            for d in curso.obrigatorias:
-                print(f"      → [OB] {d}")
+    #         for d in curso.obrigatorias:
+    #             print(f"      → [OB] {d}")
 
-            for d in curso.optativas_eletivas:
-                print(f"      → [EL] {d}")
+    #         for d in curso.optativas_eletivas:
+    #             print(f"      → [EL] {d}")
 
-            for d in curso.optativas_livres:
-                print(f"      → [LV] {d}")
+    #         for d in curso.optativas_livres:
+    #             print(f"      → [LV] {d}")
     
     #exportar_para_json(unidades_data)
     iniciar_menu_interativo(unidades_data, disciplinas_por_codigo)
