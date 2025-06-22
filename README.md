@@ -4,7 +4,9 @@ Projeto de captura automatizada de dados do **JupiterWeb**, sistema oficial de g
 Este projeto foi desenvolvido para a disciplina **Teste e Validação de Software** e tem como objetivo extrair informações detalhadas das disciplinas dos cursos de graduação da USP.
 
 ## Membros
-Danielle Pereira (11918539), Henrique Carobolante Parro (11917987), Joao Augusto Fernandes Barbosa (11953348)
+- Danielle Pereira (11918539)
+- Henrique Carobolante Parro (11917987)
+- Joao Augusto Fernandes Barbosa (11953348)
 
 ## Descrição
 
