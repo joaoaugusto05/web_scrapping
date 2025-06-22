@@ -13,16 +13,19 @@ import time
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
+from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
 
 
 def wait_until_not_obstructed(driver, timeout=15):
     end_time = time.time() + timeout
     while time.time() < end_time:
-        overlays = driver.find_elements(By.CSS_SELECTOR, ".ui-widget-overlay, .blockOverlay, .modal, .loading")
-        if all(not overlay.is_displayed() for overlay in overlays):
-            return True
+        try:
+            overlays = driver.find_elements(By.CSS_SELECTOR, ".ui-widget-overlay, .blockOverlay, .modal, .loading")
+            if all(not overlay.is_displayed() for overlay in overlays):
+                return True
+        except StaleElementReferenceException:
+            pass
         time.sleep(0.1)
     return False
 
@@ -110,7 +113,7 @@ def main():
             curso_select.find_element(By.CSS_SELECTOR, f"option[value='{curso_value}']").click()
 
             safe_click(driver, By.ID, "enviar")
-            print(wait_until_not_obstructed(driver))
+            wait_until_not_obstructed(driver)
 
             html = driver.page_source
             soup = BeautifulSoup(html, "html.parser")
