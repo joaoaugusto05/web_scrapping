@@ -18,6 +18,12 @@ O script realiza scraping da grade curricular e detalhes das disciplinas diretam
 - Selenium WebDriver (para automação do navegador)
 - BeautifulSoup (para parsing do HTML). O processo foi optimizado usando selenium para interacao com o JS, uma vez que o site não eh estatico e BS4 para parser em dialogs e semelhantes
 
+## Video do Funcionamento
+    ``` https://www.loom.com/share/9a0d612a67ed42b4acc8b0a1fc39062d?sid=71ed14e7-b877-48a4-9f13-973324247ff4 ```
+
+## Github do projeto
+``` https://github.com/joaoaugusto05/web_scrapping ```
+
 ## Como Rodar
 Garanta a instalacao das bibliotecas necessarias.
 ```bash
@@ -25,6 +31,9 @@ pip install -r requirements.txt
 ```
 
 No terminal, execute o script principal passando como argumento o número de unidades que deseja processar.
+Alguns elementos demoram um tempo diferente para rodar e isso pode estourar o tempo definido pelo WebDriver, gerando perda de dados ou erros.
+Nesse caso, recomenda-se aumentar o parametro opcional deafult_timeout, cujo padrao sao 0.2 segundos.
 
 ```bash
-python3 src/main.py <numero_de_unidades>
+python3 src/main.py <numero_de_unidades> --default-timeout <default_timeout>
+```

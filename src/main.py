@@ -13,19 +13,16 @@ import time
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 
 
 def wait_until_not_obstructed(driver, timeout=15):
     end_time = time.time() + timeout
     while time.time() < end_time:
-        try:
-            overlays = driver.find_elements(By.CSS_SELECTOR, ".ui-widget-overlay, .blockOverlay, .modal, .loading")
-            if all(not overlay.is_displayed() for overlay in overlays):
-                return True
-        except StaleElementReferenceException:
-            pass
+        overlays = driver.find_elements(By.CSS_SELECTOR, ".ui-widget-overlay, .modal, .loading")
+        if all(not overlay.is_displayed() for overlay in overlays):
+            return True
         time.sleep(0.1)
     return False
 
@@ -37,7 +34,7 @@ def safe_click(driver, by, value, timeout=15):
         element.click()
 
     except ElementClickInterceptedException:
-        print("[CARREGANDO] Aguardo o carregamento dos elementos do site.")
+        print("[CARREGANDO] Aguardando carregamento dos elementos do site.")
         if wait_until_not_obstructed(driver, timeout=timeout):
             element.click()
         else:
@@ -49,12 +46,12 @@ def main():
     parser.add_argument(
             "--default-timeout",       
             type=float,
-            default=0.15,             
+            default=0.2,             
             help="Tempo de espera do carregamento (padrão: 0.15 segundos)"
         )
     args = parser.parse_args()
     limite_unidades = args.quantidade_unidades
-
+    default_timeout = args.default_timeout
 
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
@@ -113,8 +110,7 @@ def main():
             curso_select.find_element(By.CSS_SELECTOR, f"option[value='{curso_value}']").click()
 
             safe_click(driver, By.ID, "enviar")
-            wait_until_not_obstructed(driver)
-
+            time.sleep(0.15)
             html = driver.page_source
             soup = BeautifulSoup(html, "html.parser")
             dialog = soup.select_one("div.ui-dialog[style*='display: block']")
@@ -130,7 +126,6 @@ def main():
                     continue
                 except TimeoutException:
                     pass
-                
             safe_click(driver, By.ID, "step4-tab")
             
             try:
@@ -145,19 +140,7 @@ def main():
                     duracao_min=duracao_minima,
                     duracao_max=duracao_max
                 )
-                unidade_obj.cursos.append(curso_obj)
-                try:
-                    WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.ID, "gradeCurricular"))
-                    )
-                except:
-                    time.sleep(1)
-                    WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.ID, "gradeCurricular"))
-                    )
-                    
-                    
-                tipo_atual = ""
+                unidade_obj.cursos.append(curso_obj)            
                 WebDriverWait(driver, 10).until(
                     EC.presence_of_all_elements_located((By.CSS_SELECTOR, "#gradeCurricular tr"))
                 )
