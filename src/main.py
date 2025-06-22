@@ -36,7 +36,7 @@ def main():
     unidades_data = {}
     disciplinas_por_codigo = {} 
     unidades_processadas = 0
-    i = 0
+
     for unidade in unidades:
         
         unidade_value = unidade.get_attribute("value")
@@ -48,9 +48,6 @@ def main():
             break
 
         print(f"[DEBUG] Unidade selecionada: {unidade_name}")
-        i += 1
-        if i < 21:
-            continue
         unidade_select = driver.find_element(By.ID, "comboUnidade")
         unidade_select.find_element(By.CSS_SELECTOR, f"option[value='{unidade_value}']").click()
 
