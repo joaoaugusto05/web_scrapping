@@ -29,7 +29,7 @@ def iniciar_menu_interativo(unidades, disciplinas_por_codigo):
                         print(f"\n🎓 {curso.nome} - Unidade: {curso.unidade}")
                         print(f"  Duração: ideal {curso.duracao_ideal}, min {curso.duracao_min}, max {curso.duracao_max}")
                         print(f"  Obrigatórias: {len(curso.obrigatorias)} | Eletivas: {len(curso.optativas_eletivas)} | Livres: {len(curso.optativas_livres)}")
-
+                        
         elif opcao == "3":
             for unidade in unidades.values():
                 for curso in unidade.cursos:
@@ -47,7 +47,9 @@ def iniciar_menu_interativo(unidades, disciplinas_por_codigo):
                     for curso in unidade.cursos:
                         if disciplina in curso.obrigatorias or disciplina in curso.optativas_eletivas or disciplina in curso.optativas_livres:
                             print(f"  - {curso.nome} ({curso.unidade})")
-            else:
+                            print(f"  Objetivos: {disciplina.objetivos}")
+                            print(f"  Programa: {disciplina.programa}")
+            else:   
                 print("❌ Disciplina não encontrada.")
 
         elif opcao == "5":
