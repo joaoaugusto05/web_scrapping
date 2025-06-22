@@ -47,8 +47,6 @@ def iniciar_menu_interativo(unidades, disciplinas_por_codigo):
                     for curso in unidade.cursos:
                         if disciplina in curso.obrigatorias or disciplina in curso.optativas_eletivas or disciplina in curso.optativas_livres:
                             print(f"  - {curso.nome} ({curso.unidade})")
-                            print(f"  Objetivos: {disciplina.objetivos}")
-                            print(f"  Programa: {disciplina.programa}")
             else:   
                 print("❌ Disciplina não encontrada.")
 

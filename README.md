@@ -2,7 +2,8 @@
 
 Projeto de captura automatizada de dados do **JupiterWeb**, sistema oficial de graduação da USP.  
 Este projeto foi desenvolvido para a disciplina **Teste e Validação de Software** e tem como objetivo extrair informações detalhadas das disciplinas dos cursos de graduação da USP.
-Membros: Joao Augusto Fernandes Barbosa (11953348), Daniele, Henrique Carobolante Parro (11917987)
+Membros: Danielle Pereira (11918539), Henrique Carobolante Parro (11917987), Joao Augusto Fernandes Barbosa (11953348)
+
 ## Descrição
 
 O script realiza scraping da grade curricular e detalhes das disciplinas diretamente do site JupiterWeb, navegando pelas unidades e cursos, coletando informações relevantes como créditos, carga horária, objetivos e programas das disciplinas.
