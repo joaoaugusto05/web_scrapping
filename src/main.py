@@ -17,10 +17,10 @@ from selenium.common.exceptions import TimeoutException, ElementClickIntercepted
 from selenium.webdriver.common.by import By
 
 
-def wait_until_not_obstructed(driver, timeout=5):
+def wait_until_not_obstructed(driver, timeout=15):
     end_time = time.time() + timeout
     while time.time() < end_time:
-        overlays = driver.find_elements(By.CSS_SELECTOR, ".ui-widget-overlay, .modal, .loading")
+        overlays = driver.find_elements(By.CSS_SELECTOR, ".ui-widget-overlay, .blockOverlay, .modal, .loading")
         if all(not overlay.is_displayed() for overlay in overlays):
             return True
         time.sleep(0.1)
@@ -43,8 +43,15 @@ def safe_click(driver, by, value, timeout=15):
 def main():
     parser = argparse.ArgumentParser(description="Extrator de cursos do Júpiter da USP.")
     parser.add_argument("quantidade_unidades", type=int, help="Quantidade de unidades a serem processadas")
+    parser.add_argument(
+            "--default-timeout",       
+            type=float,
+            default=0.15,             
+            help="Tempo de espera do carregamento (padrão: 0.15 segundos)"
+        )
     args = parser.parse_args()
     limite_unidades = args.quantidade_unidades
+
 
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
@@ -103,7 +110,8 @@ def main():
             curso_select.find_element(By.CSS_SELECTOR, f"option[value='{curso_value}']").click()
 
             safe_click(driver, By.ID, "enviar")
-            time.sleep(0.15)
+            print(wait_until_not_obstructed(driver))
+
             html = driver.page_source
             soup = BeautifulSoup(html, "html.parser")
             dialog = soup.select_one("div.ui-dialog[style*='display: block']")
@@ -119,6 +127,7 @@ def main():
                     continue
                 except TimeoutException:
                     pass
+                
             safe_click(driver, By.ID, "step4-tab")
             
             try:
