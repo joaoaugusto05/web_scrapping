@@ -41,7 +41,7 @@ def iniciar_menu_interativo(unidades, disciplinas_por_codigo):
             codigo = input("Digite o código da disciplina: ").upper()
             disciplina = disciplinas_por_codigo.get(codigo)
             if disciplina:
-                print(f"\n📘 {disciplina.codigo} - {disciplina.nome} ({disciplina.creditos_aula} CH, {disciplina.creditos_trabalho} CT)")
+                print(f"\n📘 {disciplina}")
                 print("Presente nos cursos:")
                 for unidade in unidades.values():
                     for curso in unidade.cursos:
